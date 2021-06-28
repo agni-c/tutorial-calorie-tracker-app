@@ -4,54 +4,72 @@ import { useState } from 'react';
 
 function AddItemForm({ addItem }) {
 	const [title, setTitle] = useState('');
-	const [desc, setDesc] = useState('');
+	const [calorie, setCalorie] = useState('');
 
 	const handleSubmit = e => {
 		e.preventDefault();
-		addItem({ title, desc });
+		addItem({ title, calorie });
 		setTitle('');
-		setDesc('');
+		setCalorie('');
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div class='mb-3'>
-				<label for='title' class='form-label visually-hidden'>
-					Title
-				</label>
-				<input
-					type='text'
-					name='title'
-					id='title'
-					required
-					value={title}
-					onChange={e => setTitle(e.target.value)}
-				/>
+		<form
+			onSubmit={handleSubmit}
+			className='d-flex flex-column justify-content-center my-3 mx-auto'>
+			<div className='d-flex align-items-center mb-2'>
+				<div className='me-3'>
+					<label htmlFor='title' className='form-label visually-hidden'>
+						Title
+					</label>
+					<input
+						type='text'
+						name='title'
+						id='title'
+						required
+						value={title}
+						onChange={e => setTitle(e.target.value)}
+						placeholder='Item name'
+					/>
+				</div>
+				<div>
+					<label htmlFor='calorie' className='form-label visually-hidden'>
+						Calorie
+					</label>
+					<input
+						type='number'
+						name='number'
+						id='number'
+						required
+						value={calorie}
+						onChange={e => setCalorie(e.target.value)}
+						placeholder='Calorie amount'
+					/>
+				</div>
 			</div>
-			<input
-				type='text'
-				name='desc'
-				id='desc'
-				required
-				value={desc}
-				onChange={e => setDesc(e.target.value)}
-			/>
-			<button type='submit'>Add Item</button>
+			<button type='submit' className='btn btn-primary'>
+				Add Item
+			</button>
 		</form>
 	);
 }
-
+{
+	/* <div className="card" style="width: 18rem;">
+  <div className="card-body">
+    <h5 className="card-title">Card title</h5>
+    <h6 className="card-subtitle mb-2 text-muted">Card subtitle</h6>
+    <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="#" className="card-link">Card link</a>
+    <a href="#" className="card-link">Another link</a>
+  </div>
+</div> */
+}
 function RenderItem({ updateItem, removeItem, item, index }) {
 	const [isEditing, setIsEditing] = useState(false);
+
 	return (
-		<div>
-			<div>
-				<button onClick={() => removeItem(index)}>Delete</button>
-				<button onClick={() => setIsEditing(!isEditing)}>
-					{isEditing ? 'Done' : 'Edit'}
-				</button>
-			</div>
-			<div>
+		<div className='card w-50 p-2 my-2' style={{ width: '18rem' }}>
+			<div className='card-body'>
 				{isEditing ? (
 					<input
 						type='text'
@@ -62,20 +80,33 @@ function RenderItem({ updateItem, removeItem, item, index }) {
 						onChange={e => updateItem(index, { title: e.target.value })}
 					/>
 				) : (
-					<h1>{item.title}</h1>
+					<h5 className='card-title'>{item.title}</h5>
 				)}
 				{isEditing ? (
 					<input
-						type='text'
-						name='desc'
-						id='desc'
+						type='number'
+						name='calorie'
+						id='calorie'
 						required
-						value={item.desc}
-						onChange={e => updateItem(index, { desc: e.target.value })}
+						value={item.calorie}
+						onChange={e => updateItem(index, { calorie: e.target.value })}
 					/>
 				) : (
-					<p>{item.desc}</p>
+					<p className="='card-text'">
+						{' '}
+						You have consumed {item.calorie} calories
+					</p>
 				)}
+				<div className='d-flex '>
+					<button className='btn btn-danger' onClick={() => removeItem(index)}>
+						Delete
+					</button>
+					<button
+						className='btn mx-3 btn-primary'
+						onClick={() => setIsEditing(!isEditing)}>
+						{isEditing ? 'Done' : 'Edit'}
+					</button>
+				</div>
 			</div>
 		</div>
 	);
@@ -99,10 +130,10 @@ export default function App() {
 	};
 
 	return (
-		<div>
+		<div className='container d-flex flex-column align-items-center'>
 			<AddItemForm addItem={addItem} />
 			{items.length === 0 ? (
-				<h3>Start Adding Items</h3>
+				<h3 className='text-center mt-3'>Start Adding Items</h3>
 			) : (
 				items.map((item, index) => (
 					<RenderItem
